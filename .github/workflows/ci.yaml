@@ -7,7 +7,7 @@ on:
 
 env:
   # image tag: first 5 chars of the github sha hash 
-  IMAGE_TAG: ${ $GITHUB_SHA::5 }
+  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
   unit_tests:
