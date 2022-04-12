@@ -26,17 +26,6 @@ spec:
             limits:
               cpu: 120m
               memory: 250Mi
-          env:
-            - name: IMAGE_TAG
-              valueFrom:
-                configMapKeyRef:
-                  name: my-app-config
-                  key: IMAGE_TAG
-            - name: NAMESPACE
-              valueFrom:
-                configMapKeyRef:
-                  name: my-app-config
-                  key: NAMESPACE
              
 ---
 # service
