@@ -44,6 +44,8 @@ jobs:
         name: Check output
         env:
           IMAGE_TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          echo "image tag is $IMAGE_TAG"
 
       - uses: actions/checkout@v4
         name: build docker image
