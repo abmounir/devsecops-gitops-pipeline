@@ -37,12 +37,11 @@ jobs:
     needs: [unit_tests, sonarcloud]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Set output
         id: vars
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v2
-      - name: Check output
+        name: Check output
         env:
           IMAGE_TAG: ${{ steps.vars.outputs.tag }}
 
