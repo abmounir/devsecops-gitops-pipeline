@@ -62,7 +62,6 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler 
 metadata:
   name: books-hpa
-  # namespace: books
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -77,3 +76,4 @@ spec:
       target:
         type: Utilization
         averageUtilization: 25
+  
