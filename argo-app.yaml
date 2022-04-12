@@ -2,7 +2,7 @@ project: default
 source:
   repoURL: 'https://github.com/abmounir/devsecops-gitops-pipeline.git'
   path: .
-  targetRevision: v2.0.4
+  targetRevision: v2.0.5
   directory:
     jsonnet:
       tlas:
