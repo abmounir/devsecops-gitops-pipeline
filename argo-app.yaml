@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: books
-  # namespace: argocd
+  namespace: argocd # usually deployed in argcd namespace
 spec:
   project: default
   source:
