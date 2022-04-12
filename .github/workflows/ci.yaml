@@ -1,7 +1,7 @@
 # gh actions ci yaml to test and build docker
 on:
   push:
-    # branches : [master, develop, feature/*]
+    branches : [master, develop, feature/*]
     tags:
       - "v*.*.*" 
 
@@ -79,9 +79,4 @@ jobs:
       - name: publish docker image
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${{ steps.vars.outputs.tag }}
-  deploy_to_staging_gke:
-    needs: [build_and_dast_tests]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
