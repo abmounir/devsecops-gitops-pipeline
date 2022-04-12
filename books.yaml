@@ -15,7 +15,7 @@ spec:
     spec: 
         containers:
         - name: books
-          image: moabs/fastapi:v3.0.4
+          image: moabs/fastapi:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 1097

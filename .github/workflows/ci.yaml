@@ -10,34 +10,34 @@ env:
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
-  # unit_tests:
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     # setup python
-  #     - uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.9
-  #     - run: |
-  #         pip install -r requirements.txt
-  #         pip install pytest
-  #         pytest fastapi_tests.py
-  # sonarcloud:
-  #   name: SonarCloud
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-  #     - name: SonarCloud Scan
-  #       uses: SonarSource/sonarcloud-github-action@master
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #         projectBaseDir: .
+  unit_tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      # setup python
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install -r requirements.txt
+          pip install pytest
+          pytest fastapi_tests.py
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          projectBaseDir: .
   build_and_dast_tests:
     permissions: write-all
-    # needs: [unit_tests, sonarcloud]
+    needs: [unit_tests, sonarcloud]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -56,11 +56,11 @@ jobs:
           allow_issue_writing: true
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      # - name: Upload ZAP Scan Results
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: zap-report
-      #     path: report.html
+      - name: Upload ZAP Scan Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: zap-report
+          path: report.html
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
