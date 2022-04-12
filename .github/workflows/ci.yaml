@@ -41,6 +41,7 @@ jobs:
       - name: Set output
         id: vars
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v2
       - name: Check output
         env:
           IMAGE_TAG: ${{ steps.vars.outputs.tag }}
