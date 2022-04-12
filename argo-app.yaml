@@ -1,0 +1,23 @@
+project: default
+source:
+  repoURL: 'https://github.com/abmounir/devsecops-gitops-pipeline.git'
+  path: .
+  targetRevision: v2.0.3
+  directory:
+    jsonnet:
+      tlas:
+        - name: ''
+          value: ''
+destination:
+  server: 'https://kubernetes.default.svc'
+syncPolicy:
+  automated:
+    prune: true
+    selfHeal: true
+  syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
+    - ServerSideApply=true
+    - RespectIgnoreDifferences=true
+    - PruneLast=true
+    - Validate=false
