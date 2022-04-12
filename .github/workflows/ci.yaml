@@ -42,20 +42,17 @@ jobs:
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v2
         name: Check output
-        env:
-          IMAGE_TAG: ${{ steps.vars.outputs.tag }}
-        run: |
-          echo "image tag is $IMAGE_TAG"
-
+  
+    
       - uses: actions/checkout@v4
         name: build docker image
       - run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${{ steps.vars.outputs.tag }} .
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          # docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
+          # docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${{ steps.vars.outputs.tag }}
       - name: run the docker image
         run: |
-          docker run -d -p 1097:1097 ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
+          docker run -d -p 1097:1097 ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${{ steps.vars.outputs.tag }}
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.9.0
         with:
@@ -72,7 +69,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG'
+          image-ref: '${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${{ steps.vars.outputs.tag }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -81,7 +78,7 @@ jobs:
 
       - name: publish docker image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${{ steps.vars.outputs.tag }}
   deploy_to_staging_gke:
     needs: [build_and_dast_tests]
     runs-on: ubuntu-latest
