@@ -4,3 +4,4 @@ prometheus-client==0.16.0
 quantile-python==1.1
 starlette==0.26.1
 uvicorn==0.21.1
+httpx
