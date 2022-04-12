@@ -5,10 +5,6 @@ on:
     # tags:
     #   - "v*.*.*" 
 
-env:
-  # image tag: first 5 chars of the github sha hash 
-  IMAGE_TAG: ${{ github.sha }}
-
 jobs:
   unit_tests:
     runs-on: ubuntu-22.04
@@ -43,12 +39,12 @@ jobs:
       - uses: actions/checkout@v4
         name: build docker image
       - run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:latest .
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          # docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
+          # docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:latest
       - name: run the docker image
         run: |
-          docker run -d -p 1097:1097 ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
+          docker run -d -p 1097:1097 ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:latest
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.9.0
         with:
@@ -65,7 +61,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${{ github.sha }}
+          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:latest
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -74,5 +70,5 @@ jobs:
 
       - name: publish docker image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:latest
 
