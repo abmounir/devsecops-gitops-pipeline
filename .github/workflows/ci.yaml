@@ -65,7 +65,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
+          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:v3.0.3
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
