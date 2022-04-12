@@ -21,7 +21,7 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
           pytest fastapi_tests.py
-          
+          echo "image tag is ${{ IMAGE_TAG }}"  
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
