@@ -1,12 +1,9 @@
 # gh actions ci yaml to test and build docker
 on:
   push:
-    branches : [master, develop, feature/*]
+    # branches : [master, develop, feature/*]
     tags:
       - "v*.*.*" 
-  
-# env:
-#   IMAGE_TAG : ${{ steps.tag.outputs.tag_name }}
 
 jobs:
   unit_tests:
@@ -40,15 +37,23 @@ jobs:
     needs: [unit_tests, sonarcloud]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - name: Set output
+        id: vars
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Check output
+        env:
+          IMAGE_TAG: ${{ steps.vars.outputs.tag }}
+
       - uses: actions/checkout@v4
-        name: build docker image 
+        name: build docker image
       - run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${GITHUB_REF#refs/*/} .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG .
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          # docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${GITHUB_REF#refs/*/}
+          # docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
       - name: run the docker image
         run: |
-          docker run -d -p 1097:1097 ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${GITHUB_REF#refs/*/}
+          docker run -d -p 1097:1097 ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.9.0
         with:
@@ -65,7 +70,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${GITHUB_REF#refs/*/}'
+          image-ref: '${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -74,7 +79,7 @@ jobs:
 
       - name: publish docker image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:${GITHUB_REF#refs/*/}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
   deploy_to_staging_gke:
     needs: [build_and_dast_tests]
     runs-on: ubuntu-latest
