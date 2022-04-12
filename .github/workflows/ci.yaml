@@ -1,7 +1,7 @@
 # gh actions ci yaml to test and build docker
 on:
   push:
-    # branches : [master, develop, feature/*]
+    branches : [master, develop, feature/*]
     tags:
       - "v*.*.*" 
   
