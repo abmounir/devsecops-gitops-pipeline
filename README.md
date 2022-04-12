@@ -1,26 +1,14 @@
-## Distributed Load Testing with Locust and Kubernetes
-This repo contains the code for the blog post [Distributed Load Testing with Locust and Kubernetes](https://abmounir.com/posts/Distributed-load-testing-on-Kubernetes-with-Locust/)
+## DevSecOps pipeline for a simple FastAPI application 
 
-### Add Delivery Hero public chart repo:
+### Description
+This repo contains a simple FastAPI application that is used to demonstrate a DevSecOps pipeline. The pipeline is built using GitHub Actions and Azure Devops, and uses the following tools:
 
-```bash
-helm repo add deliveryhero "https://charts.deliveryhero.io/"
-helm repo update deliveryhero
-# Check
-helm repo list | egrep "NAME|deliveryhero"
-```
-
-### Create configmap for locustfile.py
-```bash
-kubectl create configmap locust-config --from-file=locustfile.py
-```
-### Install Locust
-```bash
-helm upgrade --install locust deliveryhero/locust \
- --set loadtest.name=loadtest \
- --set loadtest.locust_locustfile_configmap=locust-config \
- --set loadtest.locust_locustfile=locustfile.py \
- --set worker.hpa.enabled=true \
- --set worker.hpa.minReplicas=5 
-
- ```
+- [SonarCloud](https://sonarcloud.io/) for static code analysis and code coverage
+- [Trivy](https://trivy.dev/) for container image scanning 
+- [OWASP ZAP](https://www.zaproxy.org/) for dynamic application security testing (DAST)
+- [Checkov](https://www.checkov.io/) for infrastructure as code (IaC) scanning
+- [ArgoCD](https://argoproj.github.io/argo-cd/) for GitOps deployment of the application
+- [Kubernetes](https://kubernetes.io/) for container orchestration
+- [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine) for managed Kubernetes clusters
+- [ArgoRollouts](https://argoproj.github.io/argo-rollouts/) for progressive delivery of the application (canary deployments)
+  
