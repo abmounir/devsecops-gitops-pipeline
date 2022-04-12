@@ -4,9 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from aioprometheus import Counter, Gauge, Histogram, Summary, MetricsMiddleware
 from aioprometheus.asgi.starlette import metrics
 import time
-# app_metrics = make_asgi_app()
-# start_http_server(port=8000)
-# function execution time , type Histogram
 h=Histogram('execution_time','execution time')
 app = FastAPI()
 app.state.users_events_counter = Counter("events", "Number of events.")
