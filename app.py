@@ -49,4 +49,4 @@ async def cart(d: dict):
 async def charge(d: dict):
     logging.info(d)
     app.state.users_events_counter.inc({"path": "/v1/charge", })
-    return {"message": "Payment completed successfully."}
+    return {"message": "Payment completed successfully via stripe API."}
