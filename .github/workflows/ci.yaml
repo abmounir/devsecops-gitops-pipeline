@@ -1,0 +1,35 @@
+# gh actions ci yaml to test and build docker
+on:
+  push:
+    branches : [master, develop, feature/*]
+  pull_request:
+    #  master, develop, feature/*
+    branches: [master, develop, feature/*]
+
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      # setup python
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: |
+          - pip3 install -r requirements.txt
+          - pip3 install pytest
+          - pytest fastapi_tests.py
+          
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
