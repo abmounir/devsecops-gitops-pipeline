@@ -10,43 +10,36 @@ env:
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
-  unit_tests:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      # setup python
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - run: |
-          pip install -r requirements.txt
-          pip install pytest
-          pytest fastapi_tests.py
-  sonarcloud:
-    name: SonarCloud
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          projectBaseDir: .
+  # unit_tests:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     # setup python
+  #     - uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.9
+  #     - run: |
+  #         pip install -r requirements.txt
+  #         pip install pytest
+  #         pytest fastapi_tests.py
+  # sonarcloud:
+  #   name: SonarCloud
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+  #     - name: SonarCloud Scan
+  #       uses: SonarSource/sonarcloud-github-action@master
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         projectBaseDir: .
   build_and_dast_tests:
     permissions: write-all
-    needs: [unit_tests, sonarcloud]
+    # needs: [unit_tests, sonarcloud]
     runs-on: ubuntu-latest
     steps:
-      - name: Set output
-        id: vars
-        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-      - uses: actions/checkout@v2
-        name: Check output
-  
-    
       - uses: actions/checkout@v4
         name: build docker image
       - run: |
@@ -72,7 +65,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG'
+          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:$IMAGE_TAG
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
