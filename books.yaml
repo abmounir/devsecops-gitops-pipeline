@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: books-deployment
-  namespace: ${NAMESPACE}
+  namespace: NAMESPACE_PLACEHOLDER
 spec:
   replicas: 1
   selector:
@@ -15,7 +15,7 @@ spec:
     spec: 
         containers:
         - name: books
-          image: moabs/fastapi:${IMAGE_TAG}
+          image: moabs/fastapi:v2.0.3
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 1097
