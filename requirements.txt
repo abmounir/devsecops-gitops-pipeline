@@ -2,6 +2,6 @@ aioprometheus==23.3.0
 fastapi==0.95.0
 prometheus-client==0.16.0
 quantile-python==1.1
-starlette==0.26.1
+starlette==0.47.2
 uvicorn==0.21.1
 httpx
